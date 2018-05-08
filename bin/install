@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+URL_BASE="https://releases.hashicorp.com/vagrant/${ASDF_INSTALL_VERSION}"
+TAR_BALL="vagrant_${ASDF_INSTALL_VERSION}_x86_64.tar.gz"
+SIG_FILE="vagrant_${ASDF_INSTALL_VERSION}_SHA256SUMS"
+
+function download_source() {
+  local download_url="${URL_BASE}/${TAR_BALL}"
+  local sig_url="${URL_BASE}/${SIG_FILE}"
+
+  (
+      cd "${tmp_download_dir}"
+      curl -Lo"${TAR_BALL}" "${download_url}"
+      curl -Lo"${SIG_FILE}" "${sig_url}"
+  )
+}
+
+function verify_sig () {
+    echo "TBD"
+}
+
+function extract() {
+  (
+      cd "${tmp_download_dir}"
+      tar -xzf "${TAR_BALL}"
+  )
+
+}
+
+function build() {
+    (
+        cd "${tmp_download_dir}"
+        #    ./configure --prefix="${ASDF_INSTALL_PATH}"
+        #    make
+        #    make install
+    )
+}
+
+
+function cleanup() {
+    echo 
+    echo rm -rf  "${tmp_download_dir}"
+}
+
+
+tmp_download_dir=$(mktemp -d -t asdf_build_XXXXXX)
+
+echo "tmp_download_dir      ${tmp_download_dir}"
+echo "ASDF_INSTALL_TYPE     $ASDF_INSTALL_TYPE"
+echo "ASDF_INSTALL_VERSION  $ASDF_INSTALL_VERSION"
+echo "ASDF_INSTALL_PATH     $ASDF_INSTALL_PATH"
+
+
+download_source 
+verify_sig
+extract
+build
+cleanup
+
+
