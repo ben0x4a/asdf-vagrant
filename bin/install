@@ -1,38 +1,47 @@
 #!/usr/bin/env bash
 
 URL_BASE="https://releases.hashicorp.com/vagrant/${ASDF_INSTALL_VERSION}"
-TAR_BALL="vagrant_${ASDF_INSTALL_VERSION}_x86_64.tar.gz"
+ZIP_FILE="vagrant_${ASDF_INSTALL_VERSION}_linux_amd64.zip"
 SIG_FILE="vagrant_${ASDF_INSTALL_VERSION}_SHA256SUMS"
 
 function download_source() {
-  local download_url="${URL_BASE}/${TAR_BALL}"
+  local download_url="${URL_BASE}/${ZIP_FILE}"
   local sig_url="${URL_BASE}/${SIG_FILE}"
 
   (
       cd "${tmp_download_dir}"
-      curl -Lo"${TAR_BALL}" "${download_url}"
+      curl -Lo"${ZIP_FILE}" "${download_url}"
       curl -Lo"${SIG_FILE}" "${sig_url}"
   )
 }
 
 function verify_sig () {
-    echo "TBD"
+    cd "${tmp_download_dir}"
+
+    PUB_SIG=$(grep ${ZIP_FILE} ${SIG_FILE})
+    LOCAL_SIG=$(sha256sum ${ZIP_FILE})
+
+    echo ${PUB_SIG}
+    echo ${LOCAL_SIG}
+
+    if [[ ${PUB_SIG} != ${LOCAL_SIG} ]]; then
+        echo "Signature Validation Failed!!"
+        exit 10
+    fi
 }
 
 function extract() {
   (
       cd "${tmp_download_dir}"
-      tar -xzf "${TAR_BALL}"
+      unzip -x "${ZIP_FILE}"
   )
-
 }
 
-function build() {
+function install() {
     (
         cd "${tmp_download_dir}"
-        #    ./configure --prefix="${ASDF_INSTALL_PATH}"
-        #    make
-        #    make install
+        mkdir -p "${ASDF_INSTALL_PATH}/bin"
+        cp -p vagrant "${ASDF_INSTALL_PATH}/bin"
     )
 }
 
@@ -54,7 +63,7 @@ echo "ASDF_INSTALL_PATH     $ASDF_INSTALL_PATH"
 download_source 
 verify_sig
 extract
-build
+install
 cleanup
 
 
