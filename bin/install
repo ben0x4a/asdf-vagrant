@@ -23,24 +23,27 @@ URL_BASE="https://releases.hashicorp.com/vagrant/${ASDF_INSTALL_VERSION}"
 SIG_FILE="vagrant_${ASDF_INSTALL_VERSION}_SHA256SUMS"
 
 function download_source() {
-  local download_url="${URL_BASE}/${ZIP_FILE}"
-  local sig_url="${URL_BASE}/${SIG_FILE}"
+    local download_url="${URL_BASE}/${ZIP_FILE}"
+    local sig_url="${URL_BASE}/${SIG_FILE}"
+    
+    cd "${tmp_download_dir}"
 
-  (
-      cd "${tmp_download_dir}"
-      curl -Lo"${ZIP_FILE}" "${download_url}"
-      curl -Lo"${SIG_FILE}" "${sig_url}"
-  )
+    echo "Downloading ${download_url}"
+    curl --silent -Lo"${ZIP_FILE}" "${download_url}"
+
+    echo "Downloading ${sig_url}"
+    curl --silent -Lo"${SIG_FILE}" "${sig_url}"
 }
 
 function verify_sig () {
+    echo "Verifing Signatures"
     cd "${tmp_download_dir}"
 
     PUB_SIG=$(grep ${ZIP_FILE} ${SIG_FILE})
     LOCAL_SIG=$(sha256sum ${ZIP_FILE})
 
-    echo ${PUB_SIG}
-    echo ${LOCAL_SIG}
+#    echo ${PUB_SIG}
+#    echo ${LOCAL_SIG}
 
     if [[ ${PUB_SIG} != ${LOCAL_SIG} ]]; then
         echo "Signature Validation Failed!!"
@@ -49,33 +52,31 @@ function verify_sig () {
 }
 
 function extract() {
-  (
-      cd "${tmp_download_dir}"
-      unzip -x "${ZIP_FILE}"
-  )
+    echo "Extacting"
+    cd "${tmp_download_dir}"
+    unzip -x "${ZIP_FILE}"
 }
 
 function install() {
-    (
-        cd "${tmp_download_dir}"
-        mkdir -p "${ASDF_INSTALL_PATH}/bin"
-        cp -p vagrant "${ASDF_INSTALL_PATH}/bin"
-    )
+    echo "Installing"
+    cd "${tmp_download_dir}"
+    mkdir -p "${ASDF_INSTALL_PATH}/bin"
+    cp -p vagrant "${ASDF_INSTALL_PATH}/bin"
 }
 
 
 function cleanup() {
-    echo 
-    echo rm -rf  "${tmp_download_dir}"
+    echo  "Cleaning up"
+    rm -rf  "${tmp_download_dir}"
 }
 
 
 tmp_download_dir=$(mktemp -d -t asdf_build_XXXXXX)
 
-echo "tmp_download_dir      ${tmp_download_dir}"
-echo "ASDF_INSTALL_TYPE     $ASDF_INSTALL_TYPE"
-echo "ASDF_INSTALL_VERSION  $ASDF_INSTALL_VERSION"
-echo "ASDF_INSTALL_PATH     $ASDF_INSTALL_PATH"
+#echo "tmp_download_dir      ${tmp_download_dir}"
+#echo "ASDF_INSTALL_TYPE     $ASDF_INSTALL_TYPE"
+#echo "ASDF_INSTALL_VERSION  $ASDF_INSTALL_VERSION"
+#echo "ASDF_INSTALL_PATH     $ASDF_INSTALL_PATH"
 
 
 download_source 
@@ -83,5 +84,4 @@ verify_sig
 extract
 install
 cleanup
-
 
