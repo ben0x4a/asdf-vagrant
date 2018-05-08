@@ -2,7 +2,8 @@
 
 asdf version manager plugin for vagrant
 
-Find asdf here  https://github.com/asdf-vm/asdf
+Find asdf here    https://github.com/asdf-vm/asdf
+Find vagrant here https://www.vagrantup.com/
 
 
 # Supported OS's
