@@ -1,7 +1,25 @@
 #!/usr/bin/env bash
 
-URL_BASE="https://releases.hashicorp.com/vagrant/${ASDF_INSTALL_VERSION}"
+
+case $(uname) in
+    Linux)
+        ZIP_FILE="vagrant_${ASDF_INSTALL_VERSION}_linux_amd64.zip"
+        ;;
+    Darwin)
+        echo "Not implemented due to HashiCorp distributing for Mac as a dmg."
+        exit 12
+        ;;
+    *)
+        echo "Unable to determine OS"
+        exit 11
+        ;;
+esac
+
 ZIP_FILE="vagrant_${ASDF_INSTALL_VERSION}_linux_amd64.zip"
+
+
+
+URL_BASE="https://releases.hashicorp.com/vagrant/${ASDF_INSTALL_VERSION}"
 SIG_FILE="vagrant_${ASDF_INSTALL_VERSION}_SHA256SUMS"
 
 function download_source() {
