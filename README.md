@@ -1,9 +1,9 @@
-# asdf-vagrant
+# Overview
 
-asdf version manager plugin for vagrant
+asdf version manager plugin for HashiCorp Vagrant
 
-Find asdf here    https://github.com/asdf-vm/asdf
-Find vagrant here https://www.vagrantup.com/
+- Find asdf here    https://github.com/asdf-vm/asdf
+- Find vagrant here https://www.vagrantup.com/
 
 
 # Supported OS's
