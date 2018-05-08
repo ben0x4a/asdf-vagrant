@@ -13,6 +13,16 @@ Mac OS is not supported due to HashiCorp distributing Vagrant as a DMG
 file for Mac.
 
 
+# Requirements
+
+- curl
+- md5sum
+- unzip
+- bash
+- sed
+- awk
+
+
 # Install
 
     asdf plugin-add vagrant git@github.com:ben0x4a/asdf-vagrant.git
@@ -22,3 +32,4 @@ file for Mac.
     asdf install vagrant ${LATEST}
     asdf global vagrant ${LATEST}
     vagrant --version
+
