@@ -23,6 +23,9 @@ file for Mac.
 - sed
 - awk
 
+# Vagrant Requirements
+
+- libarchive-tools
 
 # Install
 
